@@ -6,12 +6,19 @@ clicking one enters that store.
 
 ## Status
 
-- **Live:** AURELLE (fashion & lifestyle) — full store: home, product list
-  with filters/search/sort, product pages, cart + drawer, checkout,
-  wishlist, about, contact.
-- **Coming soon:** VoltEdge, Saffron Table, Little Sprout, VitaPure,
-  FreshBasket, PixelForge, Chapter One, PixelCraft Studio, Apex Athletics,
-  Torque & Co.
+- **Live:** all 11 stores — AURELLE (fashion & lifestyle), VoltEdge
+  (gadgets), Saffron Table (restaurant), Little Sprout (mom & children),
+  VitaPure (healthcare), FreshBasket (groceries), PixelForge (games),
+  Chapter One (e-books), PixelCraft Studio (digital services), Apex
+  Athletics (gym & sports), Torque & Co. (car & bike). Every store has the
+  full flow: home, product list with filters/search/sort, product pages,
+  cart + drawer, checkout, wishlist, about, contact.
+- Store pages/components are slug-driven: each store's data lives in
+  `src/data/<slug>.ts` (`DATA: StoreData`, registered in
+  `src/data/catalog.ts`), themed via CSS variables from
+  `src/data/stores.ts`. Image paths in `src/` carry the `/shopverse`
+  prefix (unoptimized `next/image` skips the `basePath` prefix) — keep
+  new image paths prefixed the same way.
 
 ## Run
 

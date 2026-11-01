@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Counter, Reveal, prefersReducedMotion, useGsapRegistered } from '@/components/anim';
 import { LIVE_STORES, SOON_STORES, STORES } from '@/data/stores';
+import { getStoreData } from '@/data/catalog';
 
 const MARQUEE_WORDS = STORES.map((s) => s.name.toUpperCase());
 
@@ -28,6 +29,7 @@ export default function LandingPage() {
   }, []);
 
   const live = LIVE_STORES[0];
+  const liveData = live ? getStoreData(live.slug) : undefined;
 
   return (
     <div className="min-h-screen bg-[#faf7f2] text-[#221a15]">
@@ -49,7 +51,7 @@ export default function LandingPage() {
             </a>
           </nav>
           <Link
-            href="/shop/aurelle"
+            href={`/shop/${live?.slug ?? 'aurelle'}`}
             className="rounded-full bg-[#221a15] px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03] active:scale-95"
           >
             Enter the store →
@@ -75,10 +77,10 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/shop/aurelle"
+                href={`/shop/${live?.slug ?? 'aurelle'}`}
                 className="sv-hero-cta btn-shine rounded-full bg-[#b4552d] px-7 py-3.5 font-semibold text-white transition hover:brightness-110"
               >
-                Shop AURELLE — now open
+                Shop {live?.name ?? 'AURELLE'} — now open
               </Link>
               <a
                 href="#stores"
@@ -113,8 +115,8 @@ export default function LandingPage() {
             <div className="relative overflow-hidden rounded-[24px] shadow-[0_30px_60px_-25px_rgba(34,26,21,0.45)]">
               <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
                 <Image
-                  src="/shopverse/images/aurelle/hero-editorial.jpg"
-                  alt="AURELLE editorial — model in a camel wool coat"
+                  src={liveData?.hero.image ?? '/shopverse/images/aurelle/hero-editorial.jpg'}
+                  alt={liveData?.hero.imageAlt ?? 'ShopVerse storefront'}
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -122,8 +124,8 @@ export default function LandingPage() {
                 />
               </div>
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-5 pt-16 text-white">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">Now open · Fashion & Lifestyle</p>
-                <p className="font-display text-2xl font-bold">AURELLE — Dress like the light is yours.</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">Now open · {live?.tagline ?? ''}</p>
+                <p className="font-display text-2xl font-bold">{live?.name ?? ''} — {liveData?.hero.titleLines.join(' ') ?? ''}</p>
               </div>
             </div>
             <div className="absolute -bottom-5 -left-3 rotate-[-3deg] rounded-2xl bg-white px-5 py-3 shadow-lg sm:-left-6">
@@ -164,15 +166,15 @@ export default function LandingPage() {
               <Link href={`/shop/${live.slug}`} className="group block overflow-hidden rounded-[20px]">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/shopverse/images/aurelle/lookbook-1.jpg"
-                    alt="AURELLE lookbook — satin slip dress"
+                    src={liveData?.lookbook.image ?? '/shopverse/images/aurelle/lookbook-1.jpg'}
+                    alt={liveData?.lookbook.imageAlt ?? 'Store lookbook'}
                     fill
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-6 pt-20 text-white">
-                    <p className="font-display text-3xl font-bold">The Autumn Edit</p>
-                    <p className="mt-1 text-white/85">Wool coats, satin dresses, leather goods — 8 pieces, endless outfits.</p>
+                    <p className="font-display text-3xl font-bold">{liveData?.spotlight.title ?? ''}</p>
+                    <p className="mt-1 text-white/85">{liveData?.spotlight.text ?? ''}</p>
                   </div>
                 </div>
               </Link>
@@ -192,16 +194,20 @@ export default function LandingPage() {
                 </div>
                 <div className="grid grid-cols-3 gap-3 text-center">
                   <div className="rounded-xl bg-[#faf6f1] py-3">
-                    <p className="font-display text-2xl font-bold">8</p>
+                    <p className="font-display text-2xl font-bold">{liveData?.products.length ?? 0}</p>
                     <p className="text-[11px] uppercase tracking-wider text-[#6f625a]">Products</p>
                   </div>
                   <div className="rounded-xl bg-[#faf6f1] py-3">
-                    <p className="font-display text-2xl font-bold">4.8★</p>
+                    <p className="font-display text-2xl font-bold">
+                      {liveData && liveData.products.length > 0
+                        ? `${(liveData.products.reduce((n, p) => n + p.rating, 0) / liveData.products.length).toFixed(1)}★`
+                        : '—'}
+                    </p>
                     <p className="text-[11px] uppercase tracking-wider text-[#6f625a]">Rating</p>
                   </div>
                   <div className="rounded-xl bg-[#faf6f1] py-3">
-                    <p className="font-display text-2xl font-bold">60d</p>
-                    <p className="text-[11px] uppercase tracking-wider text-[#6f625a]">Returns</p>
+                    <p className="font-display text-2xl font-bold">{liveData?.spotlight.statValue ?? ''}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-[#6f625a]">{liveData?.spotlight.statLabel ?? ''}</p>
                   </div>
                 </div>
                 <Link
@@ -222,15 +228,16 @@ export default function LandingPage() {
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#b4552d]">The mall directory</p>
           <h2 className="mt-2 font-display text-4xl font-bold sm:text-5xl">Eleven stores. Eleven worlds.</h2>
           <p className="mt-3 max-w-2xl text-lg text-[#6f625a]">
-            One store is open today. The rest are being dressed and lit — each with its own theme, products and
-            personality. New stores open one by one.
+            {LIVE_STORES.length === STORES.length
+              ? 'All eleven stores are open — each with its own theme, products and personality.'
+              : `${LIVE_STORES.length} store${LIVE_STORES.length === 1 ? ' is' : 's are'} open today. The rest are being dressed and lit — each with its own theme, products and personality. New stores open one by one.`}
           </p>
         </Reveal>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {STORES.map((store, i) => {
             const isLive = store.status === 'live';
-            const cover = isLive ? '/shopverse/images/aurelle/hero-editorial.jpg' : null;
+            const cover = isLive ? getStoreData(store.slug)?.hero.image ?? null : null;
             const card = (
               <>
                 <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${store.gradient}`}>
@@ -320,8 +327,8 @@ export default function LandingPage() {
           <p className="max-w-md text-sm text-white/70">
             A demo mall of beautiful stores. Dummy data and AI-generated images — no real orders or payments.
           </p>
-          <Link href="/shop/aurelle" className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#221a15] transition hover:opacity-90">
-            Visit AURELLE →
+          <Link href={`/shop/${live?.slug ?? 'aurelle'}`} className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#221a15] transition hover:opacity-90">
+            Visit {live?.name ?? 'AURELLE'} →
           </Link>
         </div>
       </footer>

@@ -5,20 +5,21 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { ProductCard } from '@/components/ProductCard';
-import { PRODUCTS, formatPrice, getProduct } from '@/data/aurelle';
+import { PROMO_CODE, formatPrice, getStoreData, getStoreProduct } from '@/data/catalog';
 
-const SLUG = 'aurelle';
-
-export default function CartPage() {
+export default function CartPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
+  const data = getStoreData(slug);
+  const PRODUCTS = data?.products ?? [];
   const { items, updateQty, removeItem, totalsFor, applyPromo, removePromo, promo } = useCart();
   const [code, setCode] = useState('');
   const [msg, setMsg] = useState('');
-  const list = items[SLUG] ?? [];
-  const totals = totalsFor(SLUG);
+  const list = items[slug] ?? [];
+  const totals = totalsFor(slug);
 
   const submitPromo = () => {
-    if (applyPromo(code)) setMsg('WELCOME10 applied — 10% off your order.');
-    else setMsg('That code is not valid. Try WELCOME10.');
+    if (applyPromo(code)) setMsg(`${PROMO_CODE} applied — 10% off your order.`);
+    else setMsg(`That code is not valid. Try ${PROMO_CODE}.`);
   };
 
   return (
@@ -33,7 +34,7 @@ export default function CartPage() {
           <p className="font-display text-3xl font-bold">Your cart is empty.</p>
           <p className="mx-auto mt-2 max-w-sm text-[var(--ink-soft)]">Beautiful things are waiting — start with the pieces everyone loves.</p>
           <Link
-            href={`/shop/${SLUG}/products`}
+            href={`/shop/${slug}/products`}
             className="mt-6 inline-block rounded-full bg-[var(--brand)] px-7 py-3 font-semibold text-[var(--brand-ink)]"
           >
             Continue shopping
@@ -43,25 +44,25 @@ export default function CartPage() {
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
           <ul className="flex flex-col gap-5">
             {list.map((item, idx) => {
-              const p = getProduct(item.productId);
+              const p = getStoreProduct(slug, item.productId);
               if (!p) return null;
               return (
                 <li
                   key={`${item.productId}-${item.size}-${item.color}`}
                   className="flex gap-4 rounded-[var(--radius)] border border-[var(--line)] bg-white p-4"
                 >
-                  <Link href={`/shop/${SLUG}/product/${p.id}`} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-[var(--surface-2)]">
+                  <Link href={`/shop/${slug}/product/${p.id}`} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-[var(--surface-2)]">
                     <Image src={p.image} alt={p.name} fill sizes="96px" className="object-cover" />
                   </Link>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <Link href={`/shop/${SLUG}/product/${p.id}`} className="font-display text-lg font-bold leading-snug hover:text-[var(--brand)]">
+                      <Link href={`/shop/${slug}/product/${p.id}`} className="font-display text-lg font-bold leading-snug hover:text-[var(--brand)]">
                         {p.name}
                       </Link>
                       <button
                         type="button"
                         aria-label={`Remove ${p.name}`}
-                        onClick={() => removeItem(SLUG, idx)}
+                        onClick={() => removeItem(slug, idx)}
                         className="text-xl text-[var(--ink-soft)] hover:text-red-600"
                       >
                         ×
@@ -72,11 +73,11 @@ export default function CartPage() {
                     </p>
                     <div className="mt-3 flex items-center justify-between">
                       <div className="flex items-center rounded-full border border-[var(--line)]">
-                        <button type="button" aria-label="Decrease quantity" onClick={() => updateQty(SLUG, idx, item.qty - 1)} className="flex h-9 w-9 items-center justify-center text-lg">
+                        <button type="button" aria-label="Decrease quantity" onClick={() => updateQty(slug, idx, item.qty - 1)} className="flex h-9 w-9 items-center justify-center text-lg">
                           −
                         </button>
                         <span className="w-7 text-center font-semibold">{item.qty}</span>
-                        <button type="button" aria-label="Increase quantity" onClick={() => updateQty(SLUG, idx, item.qty + 1)} className="flex h-9 w-9 items-center justify-center text-lg">
+                        <button type="button" aria-label="Increase quantity" onClick={() => updateQty(slug, idx, item.qty + 1)} className="flex h-9 w-9 items-center justify-center text-lg">
                           +
                         </button>
                       </div>
@@ -134,7 +135,7 @@ export default function CartPage() {
               </p>
               {totals.discount > 0 && (
                 <p className="flex justify-between text-green-700">
-                  <span>Discount (WELCOME10)</span>
+                  <span>Discount ({PROMO_CODE})</span>
                   <span>−{formatPrice(totals.discount)}</span>
                 </p>
               )}
@@ -148,12 +149,12 @@ export default function CartPage() {
               </p>
             </div>
             <Link
-              href={`/shop/${SLUG}/checkout`}
+              href={`/shop/${slug}/checkout`}
               className="btn-shine mt-6 block w-full rounded-full bg-[var(--brand)] py-3.5 text-center font-semibold text-[var(--brand-ink)] transition hover:brightness-110"
             >
               Proceed to checkout
             </Link>
-            <Link href={`/shop/${SLUG}/products`} className="mt-3 block text-center text-sm font-semibold underline underline-offset-4 hover:text-[var(--brand)]">
+            <Link href={`/shop/${slug}/products`} className="mt-3 block text-center text-sm font-semibold underline underline-offset-4 hover:text-[var(--brand)]">
               Continue shopping
             </Link>
           </aside>
@@ -164,7 +165,7 @@ export default function CartPage() {
         <h2 className="font-display text-3xl font-bold">Complete the look</h2>
         <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
           {PRODUCTS.slice(0, 4).map((p) => (
-            <ProductCard key={p.id} product={p} storeSlug={SLUG} />
+            <ProductCard key={p.id} product={p} storeSlug={slug} />
           ))}
         </div>
       </section>

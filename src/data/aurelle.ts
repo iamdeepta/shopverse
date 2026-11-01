@@ -1,22 +1,6 @@
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  compareAt?: number;
-  rating: number;
-  reviews: number;
-  category: string;
-  sizes: string[];
-  colors: string[];
-  badge?: string;
-  isNew?: boolean;
-  isBestseller?: boolean;
-  image: string;
-  short: string;
-  description: string;
-  details: string[];
-}
+import type { Perk, Product, StoreData, Testimonial } from './catalog';
+
+export type { Product };
 
 export const AURELLE_SLUG = 'aurelle';
 
@@ -223,7 +207,7 @@ export function relatedProducts(id: string, count = 4): Product[] {
   return [...sameCategory, ...rest].slice(0, count);
 }
 
-export const TESTIMONIALS = [
+export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       'The Meridian coat is the best thing I have bought in years. The wool is substantial, the cut is perfect, and I get asked about it every single week.',
@@ -247,7 +231,7 @@ export const TESTIMONIALS = [
   },
 ];
 
-export const PERKS = [
+export const PERKS: Perk[] = [
   {
     title: 'Free shipping over $150',
     text: 'Fast, tracked delivery on every order over $150 — worldwide.',
@@ -299,3 +283,131 @@ export function formatPrice(value: number): string {
     minimumFractionDigits: value % 1 === 0 ? 0 : 2,
   }).format(value);
 }
+
+/** Storefront copy and imagery for the generalized pages/components (see src/data/catalog.ts). */
+export const CATEGORY_IMAGES: Record<string, string> = {
+  Women: '/shopverse/images/aurelle/category-women.jpg',
+  Men: '/shopverse/images/aurelle/category-men.jpg',
+  Accessories: '/shopverse/images/aurelle/category-accessories.jpg',
+};
+
+export const MARQUEE_ITEMS = [
+  'Free shipping over $150',
+  '60-day returns',
+  'New: The Autumn Edit',
+  '2-year warranty',
+  'Carbon-neutral delivery',
+];
+
+export const ABOUT_COPY = {
+  headline: 'Slow fashion for fast lives.',
+  intro:
+    'Aurelle began in a two-room atelier with one belief: the clothes you live in should be made with the same care as the clothes you save for special days. No seasons of throwaway fashion — just considered pieces in honest materials, designed to be worn, washed, repaired and loved for years.',
+  image: '/shopverse/images/aurelle/lookbook-2.jpg',
+  imageAlt: 'Aurelle lookbook — knitwear and tailoring on the street',
+  milestones: [
+    { value: '2019', label: 'Founded in a two-room atelier. First collection: six pieces, one fabric mill.' },
+    { value: '38 mills', label: 'Partner mills and workshops across Italy, Portugal and Japan — all visited in person.' },
+    { value: '0 plastic', label: 'No virgin plastic in any product or package since day one.' },
+  ],
+  values: [
+    {
+      title: 'Design slowly',
+      text: 'Each piece is sketched, sampled and worn by our own team for a full month before it earns a place in the collection.',
+    },
+    {
+      title: 'Make honestly',
+      text: 'We name every mill and workshop. If we would not be proud to show you how it is made, we do not make it.',
+    },
+    {
+      title: 'Stand behind it',
+      text: 'A two-year craftsmanship warranty and free repairs for life. Good clothes should be fixable, not disposable.',
+    },
+  ],
+};
+
+export const CONTACT_COPY = {
+  email: 'hello@aurelle.example',
+  emailNote: 'For anything, anytime.',
+  address: '14 Willow Lane, Portland, OR',
+  addressHours: 'Mon–Sat, 10:00–18:00.',
+  phone: '+1 (555) 014-2800',
+  phoneHours: 'Mon–Fri, 09:00–17:00 PT.',
+  helpTitle: 'Sizing help?',
+  helpText:
+    'Between sizes? Take the smaller one for tailoring, the larger one for knits. Still unsure — write to us with your height and usual size and we will reply personally.',
+  topics: ['Order question', 'Sizing & fit', 'Returns & exchanges', 'Press & partnerships', 'Something else'],
+};
+
+export const AURELLE_DATA: StoreData = {
+  slug: 'aurelle',
+  products: PRODUCTS,
+  categories: [...CATEGORIES],
+  testimonials: TESTIMONIALS,
+  perks: PERKS,
+  hero: {
+    eyebrow: HERO_COPY.eyebrow,
+    titleLines: ['Dress like', 'the light', 'is yours.'],
+    subtitle: HERO_COPY.subtitle,
+    ctaPrimary: HERO_COPY.ctaPrimary,
+    ctaSecondary: HERO_COPY.ctaSecondary,
+    image: '/shopverse/images/aurelle/hero-editorial.jpg',
+    imageAlt: 'AURELLE editorial — model in a camel wool coat',
+    rating: 4.8,
+    ratingLine: '4.8 · 1,300+ verified reviews',
+  },
+  heroBadge: 'Meridian Wool Coat · $289',
+  marqueeItems: MARQUEE_ITEMS,
+  categoryImages: CATEGORY_IMAGES,
+  lookbook: {
+    eyebrow: LOOKBOOK_COPY.eyebrow,
+    title: LOOKBOOK_COPY.title,
+    text: LOOKBOOK_COPY.text,
+    image: '/shopverse/images/aurelle/lookbook-1.jpg',
+    imageAlt: 'Lookbook — satin slip dress in soft light',
+    stats: [
+      { value: '100%', label: 'natural fibers in the core line' },
+      { value: '2 yrs', label: 'craftsmanship warranty, standard' },
+    ],
+    secondImage: '/shopverse/images/aurelle/lookbook-2.jpg',
+    secondImageAlt: 'Lookbook — knit sweater and pleated trousers',
+    secondImageCaption: 'Knit & Tailoring',
+  },
+  collection: {
+    eyebrow: COLLECTION_COPY.eyebrow,
+    title: COLLECTION_COPY.title,
+    text: COLLECTION_COPY.text,
+    ctaLabel: 'Shop leather goods',
+    ctaCategory: 'Accessories',
+  },
+  newsletter: {
+    title: 'First looks, private sales, no noise.',
+    text: 'One beautiful email a week. Get 10% off your first order with code WELCOME10 when you join.',
+    success: 'Welcome to Aurelle. Your code WELCOME10 is waiting at checkout.',
+  },
+  spotlight: {
+    title: 'The Autumn Edit',
+    text: 'Wool coats, satin dresses, leather goods — 8 pieces, endless outfits.',
+    statValue: '60d',
+    statLabel: 'Returns',
+  },
+  about: ABOUT_COPY,
+  contact: CONTACT_COPY,
+  galleryLabels: ['Full view', 'Detail', 'Fabric'],
+  shippingLines: [
+    'Orders ship within 1–2 business days, tracked door to door.',
+    'Free shipping on orders over $150; flat $8 under that.',
+    'Express delivery available at checkout (demo store — no real shipments).',
+  ],
+  returnsLines: [
+    '60-day free returns, no questions asked.',
+    'Items must be unworn with tags attached.',
+    'Exchanges for size or color are always free.',
+  ],
+  trustLine: '🚚 Free shipping over $150 · ↩ 60-day free returns · 🔒 Secure demo checkout — no real payment.',
+  searchPlaceholder: 'Search coats, dresses, leather…',
+  variantLabels: { colorLabel: 'Color', sizeLabel: 'Size' },
+  orderPrefix: 'AU',
+  freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
+  flatShipping: FLAT_SHIPPING,
+};

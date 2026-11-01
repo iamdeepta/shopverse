@@ -1,13 +1,16 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { getStoreData } from '@/data/catalog';
 import { Reveal } from '@/components/anim';
 
 const inputCls =
   'w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 outline-none transition focus:border-[var(--brand)]';
 
-export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', topic: 'Order question', message: '' });
+export default function ContactPage({ params }: { params: { slug: string } }) {
+  const contact = getStoreData(params.slug)?.contact;
+  const topics = contact?.topics ?? ['Order question'];
+  const [form, setForm] = useState({ name: '', email: '', topic: topics[0], message: '' });
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,10 +41,10 @@ export default function ContactPage() {
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
         <div className="flex flex-col gap-5">
-          {[
-            { t: 'Email us', d: 'hello@aurelle.example', s: 'For anything, anytime.' },
-            { t: 'Visit the atelier', d: '14 Willow Lane, Portland, OR', s: 'Mon–Sat, 10:00–18:00.' },
-            { t: 'Call us', d: '+1 (555) 014-2800', s: 'Mon–Fri, 09:00–17:00 PT.' },
+{[
+            { t: 'Email us', d: contact?.email ?? '', s: contact?.emailNote ?? '' },
+            { t: 'Visit us', d: contact?.address ?? '', s: contact?.addressHours ?? '' },
+            { t: 'Call us', d: contact?.phone ?? '', s: contact?.phoneHours ?? '' },
           ].map((c) => (
             <div key={c.t} className="rounded-[var(--radius)] border border-[var(--line)] bg-white p-6">
               <p className="text-sm font-bold uppercase tracking-wider text-[var(--ink-soft)]">{c.t}</p>
@@ -50,11 +53,8 @@ export default function ContactPage() {
             </div>
           ))}
           <div className="rounded-[var(--radius)] bg-[var(--ink)] p-6 text-white">
-            <p className="font-display text-xl font-bold">Sizing help?</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">
-              Between sizes? Take the smaller one for tailoring, the larger one for knits. Still unsure — write to us
-              with your height and usual size and we will reply personally.
-            </p>
+<p className="font-display text-xl font-bold">{contact?.helpTitle ?? ''}</p>
+            <p className="mt-1 text-sm leading-relaxed text-white/75">{contact?.helpText ?? ''}</p>
           </div>
         </div>
 
@@ -71,7 +71,7 @@ export default function ContactPage() {
                 type="button"
                 onClick={() => {
                   setSent(false);
-                  setForm({ name: '', email: '', topic: 'Order question', message: '' });
+                  setForm({ name: '', email: '', topic: topics[0], message: '' });
                 }}
                 className="mt-6 rounded-full border-2 border-[var(--ink)] px-6 py-2.5 font-semibold"
               >
@@ -97,11 +97,9 @@ export default function ContactPage() {
                   Topic
                 </label>
                 <select id="topic" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} className={inputCls}>
-                  <option>Order question</option>
-                  <option>Sizing & fit</option>
-                  <option>Returns & exchanges</option>
-                  <option>Press & partnerships</option>
-                  <option>Something else</option>
+{topics.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
                 </select>
               </div>
               <div>

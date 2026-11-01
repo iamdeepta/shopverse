@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import type { StoreEntry } from '@/data/stores';
+import { LIVE_STORES, type StoreEntry } from '@/data/stores';
 
 export function ComingSoon({ store }: { store: StoreEntry }) {
   const [email, setEmail] = useState('');
@@ -66,8 +66,8 @@ export function ComingSoon({ store }: { store: StoreEntry }) {
         )}
         <p className="mt-10 text-sm text-[#6f625a]">
           Meanwhile, our first store is open —{' '}
-          <Link href="/shop/aurelle" className="font-semibold text-[#b4552d] underline underline-offset-4">
-            visit AURELLE →
+          <Link href={`/shop/${LIVE_STORES[0]?.slug ?? 'aurelle'}`} className="font-semibold text-[#b4552d] underline underline-offset-4">
+            visit {LIVE_STORES[0]?.name ?? 'AURELLE'} →
           </Link>
         </p>
       </main>

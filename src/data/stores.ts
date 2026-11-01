@@ -68,7 +68,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Audio', 'Wearables', 'Smart Home'],
     vibe: ['Electric', 'Sleek', 'Future-ready'],
     gradient: 'from-[#0ea5e9] to-[#1e3a8a]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#0284c7',
       brandSoft: '#e0f2fe',
@@ -89,7 +89,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Mains', 'Desserts', 'Pantry'],
     vibe: ['Warm', 'Artisanal', 'Appetizing'],
     gradient: 'from-[#dc2626] to-[#7c2d12]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#c2410c',
       brandSoft: '#ffedd5',
@@ -110,7 +110,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Baby', 'Kids', 'Maternity'],
     vibe: ['Soft', 'Playful', 'Caring'],
     gradient: 'from-[#f472b6] to-[#a855f7]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#db2777',
       brandSoft: '#fce7f3',
@@ -131,7 +131,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Supplements', 'Skincare', 'Wellness'],
     vibe: ['Clean', 'Calm', 'Trusted'],
     gradient: 'from-[#10b981] to-[#0f766e]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#059669',
       brandSoft: '#d1fae5',
@@ -152,7 +152,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Produce', 'Pantry', 'Household'],
     vibe: ['Fresh', 'Honest', 'Everyday'],
     gradient: 'from-[#65a30d] to-[#166534]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#4d7c0f',
       brandSoft: '#ecfccb',
@@ -173,7 +173,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Games', 'Consoles', 'Gear'],
     vibe: ['Bold', 'Neon', 'Playful'],
     gradient: 'from-[#7c3aed] to-[#312e81]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#7c3aed',
       brandSoft: '#ede9fe',
@@ -194,7 +194,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Fiction', 'Non-fiction', 'Audiobooks'],
     vibe: ['Quiet', 'Curious', 'Literary'],
     gradient: 'from-[#92400e] to-[#451a03]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#92400e',
       brandSoft: '#fef3c7',
@@ -215,7 +215,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Design', 'Development', 'Branding'],
     vibe: ['Sharp', 'Modern', 'Expert'],
     gradient: 'from-[#0891b2] to-[#164e63]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#0891b2',
       brandSoft: '#cffafe',
@@ -236,7 +236,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Apparel', 'Equipment', 'Nutrition'],
     vibe: ['Energetic', 'Strong', 'Driven'],
     gradient: 'from-[#ea580c] to-[#991b1b]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#ea580c',
       brandSoft: '#ffedd5',
@@ -257,7 +257,7 @@ export const STORES: StoreEntry[] = [
     categories: ['Parts', 'Accessories', 'Care'],
     vibe: ['Rugged', 'Precise', 'Road-ready'],
     gradient: 'from-[#334155] to-[#020617]',
-    status: 'soon',
+    status: 'live',
     theme: {
       brand: '#dc2626',
       brandSoft: '#fee2e2',

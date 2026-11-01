@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { formatPrice, type Product } from '@/data/aurelle';
+import { formatPrice, type Product } from '@/data/catalog';
 import { Stars } from './Stars';
 
 export function ProductCard({ product, storeSlug }: { product: Product; storeSlug: string }) {

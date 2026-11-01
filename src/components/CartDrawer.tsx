@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { FREE_SHIPPING_THRESHOLD, formatPrice, getProduct } from '@/data/aurelle';
+import { PROMO_CODE, PROMO_PERCENT, formatPrice, getStoreData, getStoreProduct } from '@/data/catalog';
 
 export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeName: string }) {
   const { items, drawerOpen, setDrawerOpen, updateQty, removeItem, totalsFor, applyPromo, removePromo, promo } = useCart();
@@ -13,12 +13,13 @@ export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeN
 
   const list = items[storeSlug] ?? [];
   const totals = totalsFor(storeSlug);
+  const threshold = getStoreData(storeSlug)?.freeShippingThreshold ?? 150;
 
   const submitPromo = () => {
     if (applyPromo(code)) {
-      setPromoMsg('WELCOME10 applied — 10% off.');
+      setPromoMsg(`${PROMO_CODE} applied — ${PROMO_PERCENT}% off.`);
     } else {
-      setPromoMsg('That code is not valid. Try WELCOME10.');
+      setPromoMsg(`That code is not valid. Try ${PROMO_CODE}.`);
     }
   };
 
@@ -65,7 +66,7 @@ export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeN
               style={{ width: `${Math.round(totals.freeShippingProgress * 100)}%` }}
             />
           </div>
-          <p className="mt-1 text-xs text-[var(--ink-soft)]">Free shipping over {formatPrice(FREE_SHIPPING_THRESHOLD)}</p>
+          <p className="mt-1 text-xs text-[var(--ink-soft)]">Free shipping over {formatPrice(threshold)}</p>
         </div>
 
         <div className="nice-scroll flex-1 overflow-y-auto px-5 py-4">
@@ -86,7 +87,7 @@ export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeN
           ) : (
             <ul className="flex flex-col gap-4">
               {list.map((item, idx) => {
-                const p = getProduct(item.productId);
+                const p = getStoreProduct(storeSlug, item.productId);
                 if (!p) return null;
                 return (
                   <li key={`${item.productId}-${item.size}-${item.color}`} className="flex gap-3">
@@ -141,7 +142,7 @@ export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeN
             {promo ? (
               <div className="mb-3 flex items-center justify-between rounded-lg bg-[var(--brand-soft)] px-3 py-2 text-sm">
                 <span>
-                  Code <strong>{promo}</strong> applied (−10%)
+                  Code <strong>{promo}</strong> applied (−{PROMO_PERCENT}%)
                 </span>
                 <button type="button" onClick={removePromo} className="font-semibold underline">
                   Remove
@@ -152,7 +153,7 @@ export function CartDrawer({ storeSlug, storeName }: { storeSlug: string; storeN
                 <input
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  placeholder="Promo code (try WELCOME10)"
+                  placeholder={`Promo code (try ${PROMO_CODE})`}
                   className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm outline-none focus:border-[var(--brand)]"
                 />
                 <button

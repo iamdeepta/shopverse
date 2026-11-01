@@ -7,14 +7,12 @@ import { useCart } from '@/context/CartContext';
 import { ProductCard } from '@/components/ProductCard';
 import { Reveal } from '@/components/anim';
 import { Stars } from '@/components/Stars';
-import { formatPrice, getProduct, relatedProducts } from '@/data/aurelle';
+import { formatPrice, getStoreData, getStoreProduct, relatedStoreProducts } from '@/data/catalog';
 
-const SLUG = 'aurelle';
-
-const GALLERY_VIEWS = [
-  { label: 'Full view', className: 'object-cover' },
-  { label: 'Detail', className: 'scale-[1.6] object-cover object-top' },
-  { label: 'Fabric', className: 'scale-[1.45] object-cover object-bottom' },
+const GALLERY_VIEW_CLASSES = [
+  'object-cover',
+  'scale-[1.6] object-cover object-top',
+  'scale-[1.45] object-cover object-bottom',
 ];
 
 const REVIEW_SNIPPETS = [
@@ -23,8 +21,9 @@ const REVIEW_SNIPPETS = [
   { name: 'Sofia L.', title: 'Beautifully crafted', text: 'You can feel the care in the details — stitching, materials, packaging. This is how online shopping should feel.' },
 ];
 
-export function ProductDetail({ productId }: { productId: string }) {
-  const product = getProduct(productId);
+export function ProductDetail({ productId, storeSlug }: { productId: string; storeSlug: string }) {
+  const data = getStoreData(storeSlug);
+  const product = getStoreProduct(storeSlug, productId);
   const { addToCart, wishlist, toggleWishlist, setDrawerOpen } = useCart();
   const [size, setSize] = useState(product?.sizes[0] ?? '');
   const [color, setColor] = useState(product?.colors[0] ?? '');
@@ -33,9 +32,13 @@ export function ProductDetail({ productId }: { productId: string }) {
   const [openSection, setOpenSection] = useState<string | null>('details');
   const [justAdded, setJustAdded] = useState(false);
 
-  if (!product) return null;
+  if (!product || !data) return null;
+  const galleryViews = (data.galleryLabels as string[]).map((label, i) => ({
+    label,
+    className: GALLERY_VIEW_CLASSES[i] ?? GALLERY_VIEW_CLASSES[0],
+  }));
   const wished = wishlist.includes(product.id);
-  const related = relatedProducts(product.id);
+  const related = relatedStoreProducts(storeSlug, product.id);
   const discount = product.compareAt ? Math.round((1 - product.price / product.compareAt) * 100) : 0;
   const reviews = REVIEW_SNIPPETS.map((r, i) => ({
     ...r,
@@ -43,7 +46,7 @@ export function ProductDetail({ productId }: { productId: string }) {
   }));
 
   const add = (goToCart: boolean) => {
-    addToCart(SLUG, { productId: product.id, size, color, qty });
+    addToCart(storeSlug, { productId: product.id, size, color, qty });
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 2500);
     if (goToCart) setDrawerOpen(true);
@@ -54,31 +57,23 @@ export function ProductDetail({ productId }: { productId: string }) {
     {
       id: 'shipping',
       title: 'Shipping & delivery',
-      body: [
-        'Orders ship within 1–2 business days, tracked door to door.',
-        'Free shipping on orders over $150; flat $8 under that.',
-        'Express delivery available at checkout (demo store — no real shipments).',
-      ],
+      body: data.shippingLines,
     },
     {
       id: 'returns',
       title: 'Returns & exchanges',
-      body: [
-        '60-day free returns, no questions asked.',
-        'Items must be unworn with tags attached.',
-        'Exchanges for size or color are always free.',
-      ],
+      body: data.returnsLines,
     },
   ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <nav aria-label="Breadcrumb" className="text-sm text-[var(--ink-soft)]">
-        <Link href={`/shop/${SLUG}`} className="hover:text-[var(--brand)]">
+        <Link href={`/shop/${storeSlug}`} className="hover:text-[var(--brand)]">
           Home
         </Link>{' '}
         /{' '}
-        <Link href={`/shop/${SLUG}/products`} className="hover:text-[var(--brand)]">
+        <Link href={`/shop/${storeSlug}/products`} className="hover:text-[var(--brand)]">
           Shop
         </Link>{' '}
         / <span className="text-[var(--ink)]">{product.name}</span>
@@ -91,11 +86,11 @@ export function ProductDetail({ productId }: { productId: string }) {
               <Image
                 key={view}
                 src={product.image}
-                alt={`${product.name} — ${GALLERY_VIEWS[view].label}`}
+                alt={`${product.name} — ${galleryViews[view].label}`}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className={`transition-transform duration-500 ${GALLERY_VIEWS[view].className}`}
+                className={`transition-transform duration-500 ${galleryViews[view].className}`}
               />
             </div>
             {product.badge && (
@@ -105,7 +100,7 @@ export function ProductDetail({ productId }: { productId: string }) {
             )}
           </div>
           <div className="mt-3 flex gap-3" role="tablist" aria-label="Product views">
-            {GALLERY_VIEWS.map((v, i) => (
+            {galleryViews.map((v, i) => (
               <button
                 key={v.label}
                 type="button"
@@ -148,7 +143,7 @@ export function ProductDetail({ productId }: { productId: string }) {
 
           <div className="mt-7">
             <p className="text-sm font-semibold">
-              Color: <span className="font-normal text-[var(--ink-soft)]">{color}</span>
+              {data.variantLabels.colorLabel}: <span className="font-normal text-[var(--ink-soft)]">{color}</span>
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {product.colors.map((c) => (
@@ -172,7 +167,7 @@ export function ProductDetail({ productId }: { productId: string }) {
           <div className="mt-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">
-                Size: <span className="font-normal text-[var(--ink-soft)]">{size}</span>
+                {data.variantLabels.sizeLabel}: <span className="font-normal text-[var(--ink-soft)]">{size}</span>
               </p>
               <button type="button" className="text-sm underline underline-offset-4 hover:text-[var(--brand)]">
                 Size guide
@@ -232,7 +227,7 @@ export function ProductDetail({ productId }: { productId: string }) {
           </div>
 
           <p className="mt-4 text-sm text-[var(--ink-soft)]">
-            🚚 Free shipping over $150 · ↩ 60-day free returns · 🔒 Secure demo checkout — no real payment.
+            {data.trustLine}
           </p>
 
           <div className="mt-8 divide-y divide-[var(--line)] border-y border-[var(--line)]">
@@ -285,14 +280,14 @@ export function ProductDetail({ productId }: { productId: string }) {
         <Reveal>
           <div className="flex items-end justify-between gap-3">
             <h2 className="font-display text-3xl font-bold sm:text-4xl">You may also like</h2>
-            <Link href={`/shop/${SLUG}/products`} className="font-semibold underline decoration-2 underline-offset-8 hover:text-[var(--brand)]">
+            <Link href={`/shop/${storeSlug}/products`} className="font-semibold underline decoration-2 underline-offset-8 hover:text-[var(--brand)]">
               View all →
             </Link>
           </div>
         </Reveal>
         <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
           {related.map((p) => (
-            <ProductCard key={p.id} product={p} storeSlug={SLUG} />
+            <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
           ))}
         </div>
       </section>

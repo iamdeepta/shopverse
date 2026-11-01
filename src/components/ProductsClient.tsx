@@ -4,9 +4,7 @@ import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { Reveal } from '@/components/anim';
-import { CATEGORIES, PRODUCTS, formatPrice } from '@/data/aurelle';
-
-const SLUG = 'aurelle';
+import { formatPrice, getStoreData } from '@/data/catalog';
 
 type SortKey = 'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
 
@@ -17,7 +15,10 @@ const PRICE_BANDS = [
   { id: 'over200', label: 'Over $200', test: (p: number) => p > 200 },
 ];
 
-function ProductsGrid() {
+function ProductsGrid({ storeSlug }: { storeSlug: string }) {
+  const data = getStoreData(storeSlug);
+  const PRODUCTS = data?.products ?? [];
+  const CATEGORIES = data?.categories ?? [];
   // Query params are read client-side (under the Suspense boundary in
   // ProductsClient below) so the page stays statically prerenderable
   // for `output: 'export'`. Same initial-state behavior as before.
@@ -84,7 +85,7 @@ function ProductsGrid() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search coats, dresses, leather…"
+          placeholder={data?.searchPlaceholder ?? 'Search products…'}
           aria-label="Search products"
           className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-white px-5 py-3 outline-none focus:border-[var(--brand)]"
         />
@@ -212,12 +213,12 @@ function ProductsGrid() {
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-3">
               {filtered.map((p) => (
-                <ProductCard key={p.id} product={p} storeSlug={SLUG} />
+                <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
               ))}
             </div>
           )}
           <p className="mt-6 text-center text-xs text-[var(--ink-soft)]">
-            Prices in USD · {formatPrice(150)}+ ships free · Demo catalog with {PRODUCTS.length} products.
+            Prices in USD · {formatPrice(data?.freeShippingThreshold ?? 150)}+ ships free · Demo catalog with {PRODUCTS.length} products.
           </p>
         </div>
       </div>
@@ -225,7 +226,7 @@ function ProductsGrid() {
   );
 }
 
-export function ProductsClient() {
+export function ProductsClient({ storeSlug }: { storeSlug: string }) {
   return (
     <Suspense
       fallback={
@@ -234,7 +235,7 @@ export function ProductsClient() {
         </div>
       }
     >
-      <ProductsGrid />
+      <ProductsGrid storeSlug={storeSlug} />
     </Suspense>
   );
 }

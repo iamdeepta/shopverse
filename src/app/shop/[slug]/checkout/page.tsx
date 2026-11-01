@@ -4,17 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 import { useCart } from '@/context/CartContext';
-import { formatPrice, getProduct } from '@/data/aurelle';
-
-const SLUG = 'aurelle';
+import { formatPrice, getStoreData, getStoreProduct } from '@/data/catalog';
 
 const inputCls =
   'w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 outline-none transition focus:border-[var(--brand)]';
 
-export default function CheckoutPage() {
+export default function CheckoutPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
+  const data = getStoreData(slug);
   const { items, totalsFor, clearStoreCart, setDrawerOpen } = useCart();
-  const list = items[SLUG] ?? [];
-  const totals = totalsFor(SLUG);
+  const list = items[slug] ?? [];
+  const totals = totalsFor(slug);
 
   const [form, setForm] = useState({
     email: '',
@@ -51,10 +51,10 @@ export default function CheckoutPage() {
     if (form.cvc.length < 3) next.cvc = 'Enter the 3-digit code.';
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    const num = `AU-${Math.floor(100000 + Math.random() * 900000)}`;
+    const num = `${data?.orderPrefix ?? 'SV'}-${Math.floor(100000 + Math.random() * 900000)}`;
     setPlacedTotal(totals.total);
     setOrderNumber(num);
-    clearStoreCart(SLUG);
+    clearStoreCart(slug);
     setDrawerOpen(false);
     window.scrollTo({ top: 0 });
   };
@@ -88,7 +88,7 @@ export default function CheckoutPage() {
           </p>
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href={`/shop/${SLUG}/products`} className="rounded-full bg-[var(--brand)] px-7 py-3 font-semibold text-[var(--brand-ink)]">
+          <Link href={`/shop/${slug}/products`} className="rounded-full bg-[var(--brand)] px-7 py-3 font-semibold text-[var(--brand-ink)]">
             Keep shopping
           </Link>
           <Link href="/" className="rounded-full border-2 border-[var(--ink)] px-7 py-3 font-semibold">
@@ -108,7 +108,7 @@ export default function CheckoutPage() {
         <div className="mt-10 rounded-[var(--radius)] border border-dashed border-[var(--line)] px-6 py-14 text-center">
           <p className="font-display text-3xl font-bold">Your cart is empty.</p>
           <p className="mt-2 text-[var(--ink-soft)]">Add something beautiful first — checkout will be waiting.</p>
-          <Link href={`/shop/${SLUG}/products`} className="mt-6 inline-block rounded-full bg-[var(--brand)] px-7 py-3 font-semibold text-[var(--brand-ink)]">
+          <Link href={`/shop/${slug}/products`} className="mt-6 inline-block rounded-full bg-[var(--brand)] px-7 py-3 font-semibold text-[var(--brand-ink)]">
             Browse products
           </Link>
         </div>
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
             <h2 className="font-display text-2xl font-bold">Order summary</h2>
             <ul className="mt-4 flex flex-col gap-4">
               {list.map((item) => {
-                const p = getProduct(item.productId);
+                const p = getStoreProduct(slug, item.productId);
                 if (!p) return null;
                 return (
                   <li key={`${item.productId}-${item.size}-${item.color}`} className="flex gap-3">

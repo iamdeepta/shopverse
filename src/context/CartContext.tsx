@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD, PROMO_CODE, PROMO_PERCENT, getProduct } from '@/data/aurelle';
+import { PROMO_CODE, PROMO_PERCENT, getStoreData, getStoreProduct } from '@/data/catalog';
 
 export interface CartItem {
   productId: string;
@@ -146,21 +146,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalsFor = useCallback(
     (storeSlug: string) => {
       const list = items[storeSlug] ?? [];
+      const data = getStoreData(storeSlug);
+      const threshold = data?.freeShippingThreshold ?? 150;
+      const flat = data?.flatShipping ?? 8;
       const subtotal = list.reduce((sum, i) => {
-        const p = getProduct(i.productId);
+        const p = getStoreProduct(storeSlug, i.productId);
         return sum + (p ? p.price * i.qty : 0);
       }, 0);
       const discount = promo === PROMO_CODE ? Math.round(subtotal * (PROMO_PERCENT / 100) * 100) / 100 : 0;
       const afterDiscount = subtotal - discount;
-      const shipping = list.length === 0 || afterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING;
+      const shipping = list.length === 0 || afterDiscount >= threshold ? 0 : flat;
       const total = afterDiscount + shipping;
       return {
         subtotal,
         discount,
         shipping,
         total,
-        freeShippingProgress: Math.min(1, afterDiscount / FREE_SHIPPING_THRESHOLD),
-        freeShippingRemaining: Math.max(0, FREE_SHIPPING_THRESHOLD - afterDiscount),
+        freeShippingProgress: threshold > 0 ? Math.min(1, afterDiscount / threshold) : 1,
+        freeShippingRemaining: Math.max(0, threshold - afterDiscount),
       };
     },
     [items, promo],
