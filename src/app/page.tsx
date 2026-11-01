@@ -49,6 +49,9 @@ export default function LandingPage() {
             <a href="#why" className="transition-colors hover:text-[#b4552d]">
               Why ShopVerse
             </a>
+            <Link href="/dashboard" className="transition-colors hover:text-[#b4552d]">
+              Dashboard
+            </Link>
           </nav>
           <Link
             href={`/shop/${live?.slug ?? 'aurelle'}`}
@@ -292,6 +295,116 @@ export default function LandingPage() {
               </Reveal>
             );
           })}
+        </div>
+      </section>
+
+      {/* Command Center / master dashboard showcase — not a store */}
+      <section id="dashboard" className="border-t border-[#e6ddd3] bg-[#171310] text-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <Reveal>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e09a72]">ShopVerse Command Center</p>
+            <h2 className="mt-2 max-w-2xl font-display text-4xl font-bold sm:text-5xl">One dashboard to run all eleven stores.</h2>
+            <p className="mt-3 max-w-2xl text-lg leading-relaxed text-white/70">
+              A single login opens every shop&apos;s numbers. Switch shops and the whole dashboard — data and theme —
+              follows that shop, while roles and permissions decide exactly who can see and change what.
+            </p>
+          </Reveal>
+
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-2">
+            <Reveal>
+              <ul className="space-y-5">
+                {[
+                  { t: 'Single login, eleven shops', d: 'Sign in once and switch between stores from the sidebar — no separate logins per shop.' },
+                  { t: 'Roles & permissions, your way', d: 'Super Admins create custom roles, assign them, and grant or revoke any permission per role or per user.' },
+                  { t: 'Shop switching that re-themes', d: 'Pick a store and the dashboard wears its colors and shows only its data.' },
+                  { t: 'Live-style analytics & operations', d: 'Revenue charts, orders, products, customers, inventory, discounts and team — all in one place.' },
+                  { t: 'Safe by default', d: 'People only ever see the shops and sections they are allowed to open. Everything else stays hidden.' },
+                ].map((f) => (
+                  <li key={f.t} className="flex gap-4">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#b4552d] text-base font-bold">✓</span>
+                    <span>
+                      <span className="block font-display text-xl font-bold">{f.t}</span>
+                      <span className="mt-0.5 block text-sm leading-relaxed text-white/65">{f.d}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/dashboard"
+                  className="btn-shine rounded-full bg-[#b4552d] px-7 py-3.5 font-semibold text-white transition hover:brightness-110"
+                >
+                  Open the dashboard →
+                </Link>
+                <span className="rounded-full border border-white/25 px-5 py-3.5 text-sm text-white/75">
+                  Demo login · password demo123
+                </span>
+              </div>
+            </Reveal>
+
+            {/* CSS-only mini dashboard mock preview (no images) */}
+            <Reveal delay={0.1}>
+              <div className="overflow-hidden rounded-[20px] border border-white/10 bg-[#221a15] shadow-[0_30px_60px_-25px_rgba(0,0,0,0.7)]" aria-label="Dashboard preview">
+                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                  <span className="ml-3 rounded-md bg-white/10 px-3 py-1 text-[11px] text-white/70">shopverse.io/dashboard</span>
+                </div>
+                <div className="flex">
+                  <div className="hidden w-36 shrink-0 space-y-2 border-r border-white/10 p-4 sm:block">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">Shops</p>
+                    {['AURELLE', 'VoltEdge', 'Saffron Table'].map((n, i) => (
+                      <p key={n} className={`rounded-lg px-2.5 py-2 text-xs font-semibold ${i === 0 ? 'bg-white text-[#221a15]' : 'text-white/70'}`}>
+                        {n}
+                      </p>
+                    ))}
+                    <p className="pt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">Manage</p>
+                    {['Overview', 'Orders', 'Products', 'Analytics', 'Team & Roles'].map((n, i) => (
+                      <p key={n} className={`rounded-lg px-2.5 py-1.5 text-xs ${i === 0 ? 'bg-[#b4552d] font-semibold text-white' : 'text-white/70'}`}>
+                        {n}
+                      </p>
+                    ))}
+                  </div>
+                  <div className="min-w-0 flex-1 p-4">
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        ['Revenue', '$48.2k', '+12.4%'],
+                        ['Orders', '1,284', '+8.1%'],
+                        ['Conversion', '3.4%', '+0.6%'],
+                      ].map(([l, v, d]) => (
+                        <div key={l} className="rounded-xl bg-white/5 p-3">
+                          <p className="text-[10px] uppercase tracking-wider text-white/50">{l}</p>
+                          <p className="mt-0.5 font-display text-lg font-bold leading-none">{v}</p>
+                          <p className="mt-1 text-[11px] font-semibold text-emerald-400">{d}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex h-28 items-end gap-2 rounded-xl bg-white/5 p-3">
+                      {[38, 52, 44, 66, 58, 78, 70, 92, 84, 100, 88, 96].map((h, i) => (
+                        <div key={i} className="flex-1 rounded-t-md bg-gradient-to-t from-[#7c3f21] to-[#e09a72]" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {[
+                        ['AU-2026-2410', 'Delivered', 'bg-emerald-400'],
+                        ['AU-2026-2417', 'Shipped', 'bg-sky-400'],
+                        ['AU-2026-2424', 'Processing', 'bg-amber-400'],
+                      ].map(([id, st, dot]) => (
+                        <div key={id} className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2 text-xs">
+                          <span className="font-mono text-white/85">{id}</span>
+                          <span className="flex items-center gap-1.5 text-white/60">
+                            <span className={`h-2 w-2 rounded-full ${dot}`} /> {st}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-3 text-center text-xs text-white/45">Preview mock-up built with CSS — the real dashboard is one click away.</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
