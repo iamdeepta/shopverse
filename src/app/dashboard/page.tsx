@@ -1091,7 +1091,8 @@ function OverviewSection({
 function OrderTable({ orders, onOpen }: { orders: ShopDashboardData['orders']; onOpen: (id: string) => void }) {
   if (orders.length === 0) return <p className="py-6 text-center text-sm text-gray-500">No orders match the current filters.</p>;
   return (
-    <div className="overflow-x-auto">
+    <>
+    <div className="hidden overflow-x-auto md:block">
       <table className="w-full min-w-[520px] text-left text-sm">
         <thead>
           <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -1117,6 +1118,22 @@ function OrderTable({ orders, onOpen }: { orders: ShopDashboardData['orders']; o
         </tbody>
       </table>
     </div>
+    <div className="space-y-3 md:hidden">
+      {orders.map((o) => (
+        <button key={o.id} type="button" onClick={() => onOpen(o.id)} className="block w-full rounded-2xl border border-gray-100 px-4 py-3.5 text-left text-sm hover:bg-gray-50">
+          <span className="flex min-w-0 items-start justify-between gap-3">
+            <span className="min-w-0 font-semibold break-words">{o.id}</span>
+            <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[o.status]}`}>{o.status}</span>
+          </span>
+          <span className="mt-1 block min-w-0 truncate font-medium text-gray-900">{o.customer}</span>
+          <span className="mt-1 flex flex-wrap items-center justify-between gap-2 text-gray-500">
+            <span className="font-semibold text-gray-900">{formatPrice(o.total)}</span>
+            <span>{o.channel}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+    </>
   );
 }
 
@@ -1380,7 +1397,8 @@ function ProductsSection({
         {rows.length === 0 ? (
           <p className="py-6 text-center text-sm text-gray-500">No products match your search.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -1472,6 +1490,66 @@ function ProductsSection({
               </tbody>
             </table>
           </div>
+          <div className="space-y-3 md:hidden">
+            {rows.map((p) => {
+              const stock = stockOf(p.id);
+              const reorder = inventory.find((r) => r.product.id === p.id)?.reorderPoint ?? 0;
+              const editing = editingId === p.id;
+              return (
+                <div key={p.id} className="rounded-2xl border border-gray-100 px-4 py-3.5 text-sm">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                      <Image src={p.image} alt={p.name} fill sizes="44px" className="object-cover" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-medium">{p.name}</span>
+                      <span className="block text-xs text-gray-400">{p.category} · ★ {p.rating.toFixed(1)} ({p.reviews})</span>
+                    </span>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${stock <= reorder ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-700'}`}>
+                      {stock} {stock <= reorder ? '· Low' : '· In stock'}
+                    </span>
+                  </div>
+                  {editing ? (
+                    <div className="mt-3 space-y-2">
+                      <label className="block text-xs font-medium text-gray-500">
+                        Price ($)
+                        <input value={editPrice} onChange={(e) => setEditPrice(e.target.value)} inputMode="decimal" className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none" aria-label="Edit price" />
+                      </label>
+                      <label className="block text-xs font-medium text-gray-500">
+                        Stock
+                        <input value={editStock} onChange={(e) => setEditStock(e.target.value)} inputMode="numeric" className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none" aria-label="Edit stock" />
+                      </label>
+                      <div className="flex gap-2">
+                        <button className="min-h-[44px] flex-1 rounded-full px-3 py-2 text-xs font-semibold text-white" style={{ background: brand }} onClick={() => onSave(p.id, Math.max(0, parseFloat(editPrice) || p.price), Math.max(0, parseInt(editStock, 10) || 0))}>
+                          Save
+                        </button>
+                        <button className="min-h-[44px] flex-1 rounded-full border border-gray-200 px-3 py-2 text-xs font-semibold" onClick={() => setEditingId(null)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-semibold">{formatPrice(p.price)}</span>
+                      <button
+                        disabled={!canEdit}
+                        title={canEdit ? 'Edit price and stock' : 'Requires the Manage products permission'}
+                        className="min-h-[44px] rounded-full border border-gray-200 px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+                        onClick={() => {
+                          setEditingId(p.id);
+                          setEditPrice(String(p.price));
+                          setEditStock(String(stock));
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          </>
         )}
       </Card>
     </div>
@@ -1523,7 +1601,8 @@ function CustomersSection({
         {rows.length === 0 ? (
           <p className="py-6 text-center text-sm text-gray-500">No customers match your search.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[560px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -1561,6 +1640,28 @@ function CustomersSection({
               </tbody>
             </table>
           </div>
+          <div className="space-y-3 md:hidden">
+            {rows.map((c) => (
+              <button key={c.id} type="button" onClick={() => onSelect(c.id)} className="block w-full rounded-2xl border border-gray-100 px-4 py-3.5 text-left text-sm hover:bg-gray-50">
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: brand }}>
+                    {c.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium">{c.name}</span>
+                    <span className="block truncate text-xs text-gray-400">{c.email}</span>
+                  </span>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${segmentStyle[c.segment]}`}>{c.segment}</span>
+                </span>
+                <span className="mt-2 flex flex-wrap items-center justify-between gap-2 text-gray-500">
+                  <span>{c.city} · {c.orders} order{c.orders === 1 ? '' : 's'}</span>
+                  <span className="font-semibold text-gray-900">{formatPrice(c.totalSpent)}</span>
+                </span>
+                <span className="mt-1 block text-xs text-gray-400">Last order: {c.lastOrder}, 2026</span>
+              </button>
+            ))}
+          </div>
+          </>
         )}
         {selected && <p className="mt-4 text-sm text-gray-500">Viewing <strong>{selected.name}</strong> in the side panel →</p>}
         {!canView && <p className="mt-4 text-sm text-amber-700">Note: customer profiles are visible in this demo; full management needs the Manage customers permission.</p>}
@@ -1683,7 +1784,8 @@ function InventorySection({
         ))}
       </div>
       <Card>
-        <div className="overflow-x-auto">
+        <>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -1753,6 +1855,60 @@ function InventorySection({
             </tbody>
           </table>
         </div>
+        <div className="space-y-3 md:hidden">
+          {inventory.map((r) => {
+            const isLow = r.stock <= r.reorderPoint;
+            return (
+              <div key={r.product.id} className="rounded-2xl border border-gray-100 px-4 py-3.5 text-sm">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <Image src={r.product.image} alt={r.product.name} fill sizes="44px" className="object-cover" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium">{r.product.name}</span>
+                    <span className="block text-xs text-gray-400 break-all">SKU {r.sku}</span>
+                  </span>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${isLow ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-700'}`}>
+                    {r.stock} units
+                  </span>
+                </div>
+                <dl className="mt-3 space-y-1 text-gray-500">
+                  <div className="flex justify-between gap-3"><dt>Reorder at</dt><dd className="font-medium text-gray-900">{r.reorderPoint}</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Cost</dt><dd className="font-medium text-gray-900">{formatPrice(r.cost)}</dd></div>
+                  <div className="flex justify-between gap-3"><dt>Supplier</dt><dd className="min-w-0 text-right font-medium break-words text-gray-900">{r.supplier}</dd></div>
+                </dl>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    disabled={!canAdjust}
+                    title={canAdjust ? 'Decrease stock by 1' : 'Requires the Manage inventory permission'}
+                    className="h-11 w-11 shrink-0 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={() => onAdjust(r.product.id, -1)}
+                  >
+                    −
+                  </button>
+                  <button
+                    disabled={!canAdjust}
+                    title={canAdjust ? 'Increase stock by 1' : 'Requires the Manage inventory permission'}
+                    className="h-11 w-11 shrink-0 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={() => onAdjust(r.product.id, 1)}
+                  >
+                    +
+                  </button>
+                  <button
+                    disabled={!canAdjust}
+                    title={canAdjust ? 'Restock by 10' : 'Requires the Manage inventory permission'}
+                    className="h-11 min-w-0 flex-1 rounded-full px-3 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{ background: brand }}
+                    onClick={() => onAdjust(r.product.id, 10)}
+                  >
+                    Restock +10
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        </>
       </Card>
     </div>
   );
@@ -2275,7 +2431,8 @@ function TeamSection({
 
       {/* Members + assignments */}
       <Card title="Team members" subtitle="Assign roles and open per-user overrides. Assignments apply immediately.">
-        <div className="overflow-x-auto">
+        <>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -2341,6 +2498,61 @@ function TeamSection({
             </tbody>
           </table>
         </div>
+        <div className="space-y-3 md:hidden">
+          {TEAM_MEMBERS.map((u) => {
+            const rid = assignments[u.id] ?? u.role;
+            const r = resolveRole(roles, rid);
+            const ov = resolveOverrides(u, storedOverrides[u.id]);
+            const eff = effectivePermissionsFor(r, ov);
+            const scope = effectiveShopsFor(r, ov);
+            const hasOverride = ov.grants.length > 0 || ov.revokes.length > 0 || ov.shops !== null;
+            return (
+              <div key={u.id} className="rounded-2xl border border-gray-100 px-4 py-3.5 text-sm">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-900 text-xs font-bold text-white">{u.initials}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium">
+                      {u.name} {u.id === currentUserId && <span className="text-xs text-gray-400">(you)</span>}
+                    </span>
+                    <span className="block truncate text-xs text-gray-400">{u.email} · {u.jobTitle}</span>
+                  </span>
+                </div>
+                <div className="mt-3 space-y-2">
+                  <label className="block text-xs font-medium text-gray-500">
+                    Role
+                    <select
+                      value={rid}
+                      disabled={!isSuperAdmin}
+                      onChange={(e) => setAssignments({ ...assignments, [u.id]: e.target.value })}
+                      className="mt-1 min-h-[44px] w-full rounded-lg border border-gray-200 px-2 py-2 text-sm outline-none disabled:bg-gray-50"
+                      aria-label={`Assign role to ${u.name}`}
+                    >
+                      {roles.map((role) => (
+                        <option key={role.id} value={role.id}>{role.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <p className="text-gray-500">
+                    Shops: <span className="font-medium text-gray-900">{scope === 'all' ? 'All shops' : `${scope.length} shop${scope.length === 1 ? '' : 's'}`}</span>
+                    {ov.shops !== null && <span className="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">override</span>}
+                  </p>
+                  <p className="text-gray-500">
+                    Permissions: <span className="font-medium text-gray-900">{eff.size}/{PERMISSIONS.length}</span>
+                  </p>
+                  <button
+                    className="min-h-[44px] w-full rounded-full border border-gray-200 px-3 py-2 text-xs font-semibold disabled:opacity-50"
+                    disabled={!isSuperAdmin}
+                    title={isSuperAdmin ? 'Edit per-user overrides' : 'Only a Super Admin can edit overrides'}
+                    onClick={() => setOverrideUserId(overrideUserId === u.id ? null : u.id)}
+                  >
+                    {hasOverride ? 'Overrides ✓' : 'Overrides'} {overrideUserId === u.id ? '▴' : '▾'}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        </>
       </Card>
 
       {/* Per-user override editor */}
@@ -2432,7 +2644,8 @@ function TeamSection({
 
       {/* Roles × permissions matrix (read-only reference) */}
       <Card title="Permission matrix" subtitle="What each role can do. Edit a role above to change its row.">
-        <div className="overflow-x-auto">
+        <>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-gray-100">
@@ -2458,6 +2671,24 @@ function TeamSection({
             </tbody>
           </table>
         </div>
+        <div className="space-y-4 md:hidden">
+          {roles.map((r) => (
+            <div key={r.id} className="rounded-2xl border border-gray-100 px-4 py-3.5">
+              <p className="text-sm font-semibold text-gray-900">{r.label}</p>
+              <ul className="mt-2 space-y-1.5">
+                {PERMISSIONS.map((p) => (
+                  <li key={p.id} className="flex min-w-0 items-center justify-between gap-3 text-sm">
+                    <span className="min-w-0 truncate text-gray-600">{p.label}</span>
+                    <span className={r.permissions.includes(p.id) ? 'shrink-0 font-bold text-emerald-600' : 'shrink-0 text-gray-300'}>
+                      {r.permissions.includes(p.id) ? '✓' : '—'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        </>
         <p className="mt-3 text-xs text-gray-400">
           Changes apply to the demo session only (saved in this browser). The built-in Super Admin role cannot be deleted and always keeps every permission.
         </p>
