@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PRODUCTS, getProduct } from '@/data/aurelle';
+import { STORES } from '@/data/stores';
 import { ProductDetail } from '@/components/ProductDetail';
 
 export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ id: p.id }));
+  // Every store slug × every product id, so all nested routes prerender
+  // for `output: 'export'` (soon stores render the ComingSoon layout).
+  return STORES.flatMap((s) => PRODUCTS.map((p) => ({ slug: s.slug, id: p.id })));
 }
 
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {

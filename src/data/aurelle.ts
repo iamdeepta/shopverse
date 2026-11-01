@@ -36,7 +36,7 @@ export const PRODUCTS: Product[] = [
     colors: ['Camel', 'Charcoal', 'Ivory'],
     badge: 'Bestseller',
     isBestseller: true,
-    image: '/images/aurelle/product-coat.jpg',
+    image: '/shopverse/images/aurelle/product-coat.jpg',
     short: 'A sculpted oversized coat in double-faced Italian wool. The one you will reach for every cold morning.',
     description:
       'Cut with a dropped shoulder and a clean, collarless neckline, the Meridian coat is tailored to feel effortless. Double-faced Italian wool keeps it warm without weight, and the hidden closure keeps the silhouette uninterrupted from every angle.',
@@ -60,7 +60,7 @@ export const PRODUCTS: Product[] = [
     colors: ['Champagne', 'Noir', 'Sage'],
     badge: 'New',
     isNew: true,
-    image: '/images/aurelle/product-dress.jpg',
+    image: '/shopverse/images/aurelle/product-dress.jpg',
     short: 'Bias-cut satin that moves like water. Dress it up, layer it down — it earns its place in every wardrobe.',
     description:
       'The Céline is cut on the bias so the satin skims instead of clinging. Adjustable straps, a midi length that works with trainers and heels alike, and a weight that feels substantial, never flimsy.',
@@ -84,7 +84,7 @@ export const PRODUCTS: Product[] = [
     colors: ['Tan', 'Black', 'Oxblood'],
     badge: 'Bestseller',
     isBestseller: true,
-    image: '/images/aurelle/product-tote.jpg',
+    image: '/shopverse/images/aurelle/product-tote.jpg',
     short: 'Vegetable-tanned leather, a structured base and room for a 13" laptop. Carries the day, beautifully.',
     description:
       'The Voyager holds its shape empty or full. Full-grain, vegetable-tanned leather that deepens in color with wear, solid brass hardware, a suede-lined interior pocket for the things you reach for most, and a magnetic top closure.',
@@ -106,7 +106,7 @@ export const PRODUCTS: Product[] = [
     category: 'Men',
     sizes: ['40', '41', '42', '43', '44', '45'],
     colors: ['White', 'White / Gum'],
-    image: '/images/aurelle/product-sneakers.jpg',
+    image: '/shopverse/images/aurelle/product-sneakers.jpg',
     short: 'Clean lines, full-grain leather, a gum sole. The quiet sneaker that goes with everything you own.',
     description:
       'No logos, no noise. The Court is built from full-grain Italian leather on a cushioned gum cupsole, with a padded collar and a last shaped for all-day comfort. Designed to be the pair you stop thinking about.',
@@ -129,7 +129,7 @@ export const PRODUCTS: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     colors: ['Cream', 'Oat', 'Slate'],
     badge: 'Low stock',
-    image: '/images/aurelle/product-sweater.jpg',
+    image: '/shopverse/images/aurelle/product-sweater.jpg',
     short: 'A cloud of a sweater — chunky cable knit in brushed merino, with a relaxed fit made for slow mornings.',
     description:
       'Knitted in a soft brushed merino blend with a classic cable pattern, the Nordic sweater is warmth you can live in. Relaxed through the body, ribbed at the hem and cuffs, and pill-resistant through seasons of wear.',
@@ -153,7 +153,7 @@ export const PRODUCTS: Product[] = [
     colors: ['Ivory', 'Sky', 'Sand'],
     badge: 'New',
     isNew: true,
-    image: '/images/aurelle/product-shirt.jpg',
+    image: '/shopverse/images/aurelle/product-shirt.jpg',
     short: 'Garment-washed European linen that breathes. The shirt that makes warm days feel considered.',
     description:
       'Woven from European flax and garment-washed for softness from day one, the Aegean shirt is cut relaxed with a camp collar and a single chest pocket. It wrinkles the way good linen should — gracefully.',
@@ -175,7 +175,7 @@ export const PRODUCTS: Product[] = [
     category: 'Men',
     sizes: ['28', '30', '32', '34', '36'],
     colors: ['Beige', 'Charcoal', 'Navy'],
-    image: '/images/aurelle/product-trousers.jpg',
+    image: '/shopverse/images/aurelle/product-trousers.jpg',
     short: 'High-rise, single pleat, tapered leg. Tailoring that feels as easy as sweatpants.',
     description:
       'A high-rise waist and single pleat give the trousers their drape; a tapered leg keeps them modern. Cut in a breathable wool-blend twill with an elasticated back waist for comfort that never shows.',
@@ -199,7 +199,7 @@ export const PRODUCTS: Product[] = [
     colors: ['Tortoise', 'Black', 'Amber'],
     badge: 'Bestseller',
     isBestseller: true,
-    image: '/images/aurelle/product-sunglasses.jpg',
+    image: '/shopverse/images/aurelle/product-sunglasses.jpg',
     short: 'Hand-finished Italian acetate, green gradient lenses, gold-core temples. Sunlight, handled.',
     description:
       'The Riviera is cut from Italian Mazzucchelli acetate and polished by hand. Green gradient CR-39 lenses with full UV protection, gold-core temples, and a fit that suits most face shapes. Includes a leather case and cloth.',

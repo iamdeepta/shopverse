@@ -21,9 +21,9 @@ import {
 const SLUG = 'aurelle';
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  Women: '/images/aurelle/category-women.jpg',
-  Men: '/images/aurelle/category-men.jpg',
-  Accessories: '/images/aurelle/category-accessories.jpg',
+  Women: '/shopverse/images/aurelle/category-women.jpg',
+  Men: '/shopverse/images/aurelle/category-men.jpg',
+  Accessories: '/shopverse/images/aurelle/category-accessories.jpg',
 };
 
 const MARQUEE_ITEMS = ['Free shipping over $150', '60-day returns', 'New: The Autumn Edit', '2-year warranty', 'Carbon-neutral delivery'];
@@ -101,7 +101,7 @@ export default function AurelleHome() {
             <div className="relative overflow-hidden rounded-[var(--radius)] shadow-[0_30px_60px_-25px_rgba(34,26,21,0.45)]">
               <div className="relative aspect-[4/5] w-full sm:aspect-[5/5.4]">
                 <Image
-                  src="/images/aurelle/hero-editorial.jpg"
+                  src="/shopverse/images/aurelle/hero-editorial.jpg"
                   alt="AURELLE editorial — model in a camel wool coat"
                   fill
                   priority
@@ -191,7 +191,7 @@ export default function AurelleHome() {
           <div ref={parallaxRef} className="relative overflow-hidden rounded-[var(--radius)]">
             <div className="relative aspect-[4/5] w-full">
               <Image
-                src="/images/aurelle/lookbook-1.jpg"
+                src="/shopverse/images/aurelle/lookbook-1.jpg"
                 alt="Lookbook — satin slip dress in soft light"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -229,7 +229,7 @@ export default function AurelleHome() {
             <div className="relative overflow-hidden rounded-[var(--radius)]">
               <div className="relative aspect-[4/3] w-full">
                 <Image
-                  src="/images/aurelle/lookbook-2.jpg"
+                  src="/shopverse/images/aurelle/lookbook-2.jpg"
                   alt="Lookbook — knit sweater and pleated trousers"
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"

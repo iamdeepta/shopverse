@@ -3,15 +3,9 @@ import { ProductsClient } from '@/components/ProductsClient';
 
 export const metadata: Metadata = { title: 'Shop all · AURELLE · ShopVerse' };
 
-export default function ProductsPage({
-  searchParams,
-}: {
-  searchParams?: { category?: string; sort?: string };
-}) {
-  return (
-    <ProductsClient
-      initialCategory={searchParams?.category ?? 'All'}
-      initialSort={searchParams?.sort ?? 'featured'}
-    />
-  );
+export default function ProductsPage() {
+  // Query params (?category= / ?sort=) are read client-side inside
+  // ProductsClient via useSearchParams, so this page stays statically
+  // prerenderable for `output: 'export'`.
+  return <ProductsClient />;
 }

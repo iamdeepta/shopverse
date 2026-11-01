@@ -1,12 +1,12 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { notFound } from 'next/navigation';
-import { getStore } from '@/data/stores';
+import { STORES, getStore } from '@/data/stores';
 import { CartDrawer } from '@/components/CartDrawer';
 import { StoreFooter, StoreHeader } from '@/components/StoreChrome';
 import { ComingSoon } from '@/components/ComingSoon';
 
 export function generateStaticParams() {
-  return [{ slug: 'aurelle' }];
+  return STORES.map((s) => ({ slug: s.slug }));
 }
 
 export default function ShopLayout({ children, params }: { children: ReactNode; params: { slug: string } }) {

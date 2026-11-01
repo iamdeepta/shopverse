@@ -22,7 +22,7 @@ export default function AboutPage() {
         <Reveal>
           <div className="relative overflow-hidden rounded-[var(--radius)]">
             <div className="relative aspect-[4/3] w-full">
-              <Image src="/images/aurelle/lookbook-2.jpg" alt="Aurelle lookbook — knitwear and tailoring on the street" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+              <Image src="/shopverse/images/aurelle/lookbook-2.jpg" alt="Aurelle lookbook — knitwear and tailoring on the street" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
             </div>
           </div>
         </Reveal>

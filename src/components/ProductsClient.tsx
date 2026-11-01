@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { Reveal } from '@/components/anim';
 import { CATEGORIES, PRODUCTS, formatPrice } from '@/data/aurelle';
@@ -16,7 +17,13 @@ const PRICE_BANDS = [
   { id: 'over200', label: 'Over $200', test: (p: number) => p > 200 },
 ];
 
-export function ProductsClient({ initialCategory, initialSort }: { initialCategory: string; initialSort: string }) {
+function ProductsGrid() {
+  // Query params are read client-side (under the Suspense boundary in
+  // ProductsClient below) so the page stays statically prerenderable
+  // for `output: 'export'`. Same initial-state behavior as before.
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') ?? 'All';
+  const initialSort = searchParams.get('sort') ?? 'featured';
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(initialCategory);
   const [priceBand, setPriceBand] = useState('all');
@@ -215,5 +222,19 @@ export function ProductsClient({ initialCategory, initialSort }: { initialCatego
         </div>
       </div>
     </div>
+  );
+}
+
+export function ProductsClient() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+          <p className="text-[var(--ink-soft)]">Loading products…</p>
+        </div>
+      }
+    >
+      <ProductsGrid />
+    </Suspense>
   );
 }

@@ -113,7 +113,7 @@ export default function LandingPage() {
             <div className="relative overflow-hidden rounded-[24px] shadow-[0_30px_60px_-25px_rgba(34,26,21,0.45)]">
               <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
                 <Image
-                  src="/images/aurelle/hero-editorial.jpg"
+                  src="/shopverse/images/aurelle/hero-editorial.jpg"
                   alt="AURELLE editorial — model in a camel wool coat"
                   fill
                   priority
@@ -164,7 +164,7 @@ export default function LandingPage() {
               <Link href={`/shop/${live.slug}`} className="group block overflow-hidden rounded-[20px]">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/images/aurelle/lookbook-1.jpg"
+                    src="/shopverse/images/aurelle/lookbook-1.jpg"
                     alt="AURELLE lookbook — satin slip dress"
                     fill
                     sizes="(max-width: 1024px) 100vw, 60vw"
@@ -230,7 +230,7 @@ export default function LandingPage() {
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {STORES.map((store, i) => {
             const isLive = store.status === 'live';
-            const cover = isLive ? '/images/aurelle/hero-editorial.jpg' : null;
+            const cover = isLive ? '/shopverse/images/aurelle/hero-editorial.jpg' : null;
             const card = (
               <>
                 <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${store.gradient}`}>
