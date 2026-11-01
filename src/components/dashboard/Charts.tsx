@@ -97,7 +97,7 @@ export function AreaChart({
         )}
       </svg>
       {hover !== null && (
-        <div className="pointer-events-none absolute -top-1 left-1/2 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white shadow-lg">
+        <div className="pointer-events-none absolute -top-1 left-1/2 max-w-[calc(100%-0.5rem)] -translate-x-1/2 truncate rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white shadow-lg">
           {labels[hover]} · {format(values[hover])}
         </div>
       )}
@@ -148,7 +148,7 @@ export function BarChart({
         })}
       </svg>
       {hover !== null && (
-        <div className="pointer-events-none absolute -top-1 left-1/2 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white shadow-lg">
+        <div className="pointer-events-none absolute -top-1 left-1/2 max-w-[calc(100%-0.5rem)] -translate-x-1/2 truncate rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white shadow-lg">
           {labels[hover]} · {format(values[hover])}
         </div>
       )}

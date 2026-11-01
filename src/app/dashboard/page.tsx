@@ -344,6 +344,24 @@ export default function DashboardPage() {
     setOrderVisible(6);
   }, [activeShop, hydrated]);
 
+  // Escape closes menus; lock body scroll while the mobile sidebar is open.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setSidebarOpen(false);
+      setNotifOpen(false);
+      setShopMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  useEffect(() => {
+    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sidebarOpen]);
+
   const user = useMemo(() => TEAM_MEMBERS.find((u) => u.id === sessionUserId), [sessionUserId]);
   const roleId = user ? (assignments[user.id] ?? user.role) : 'viewer';
   const role = useMemo(() => resolveRole(roles, roleId), [roles, roleId]);
@@ -498,7 +516,7 @@ export default function DashboardPage() {
         <Link href="/" className="font-display text-xl font-bold tracking-[0.18em]">
           SHOP<span className="opacity-80">VERSE</span>
         </Link>
-        <button className="rounded-lg px-2 py-1 text-white/70 hover:bg-white/10 lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
+        <button className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white/70 hover:bg-white/10 lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
           ✕
         </button>
       </div>
@@ -514,7 +532,7 @@ export default function DashboardPage() {
                 setActiveShop(s.slug);
                 setSidebarOpen(false);
               }}
-              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${
                 s.slug === activeShop ? 'bg-white font-semibold text-gray-900 shadow' : 'text-white/85 hover:bg-white/10'
               }`}
             >
@@ -531,7 +549,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <nav className="mt-5 flex-1 space-y-1 px-3">
+      <nav className="nice-scroll mt-5 min-h-0 flex-1 space-y-1 overflow-y-auto px-3">
         <p className="px-2 pb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/60">Manage</p>
         {visibleSections.map((s) => (
           <button
@@ -540,7 +558,7 @@ export default function DashboardPage() {
               setSection(s.id);
               setSidebarOpen(false);
             }}
-            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${
+            className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${
               section === s.id ? 'bg-white font-semibold text-gray-900 shadow' : 'text-white/85 hover:bg-white/10'
             }`}
           >
@@ -588,10 +606,10 @@ export default function DashboardPage() {
           {/* Topbar */}
           <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-white/90 backdrop-blur">
             <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
-              <button className="rounded-lg border border-gray-200 px-2.5 py-2 lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+              <button className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-gray-200 lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
                 ☰
               </button>
-              <div>
+              <div className="min-w-0 flex-1">
                 <h1 className="font-display text-xl font-bold leading-tight text-gray-900 sm:text-2xl">
                   {store.name} <span className="font-body text-sm font-normal text-gray-500">· {store.tagline}</span>
                 </h1>
@@ -685,7 +703,7 @@ export default function DashboardPage() {
                   <span className="max-w-[140px] truncate">{store.name}</span> ▾
                 </button>
                 {shopMenuOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+                  <div className="absolute right-0 top-full z-50 mt-2 w-60 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
                     <p className="border-b border-gray-100 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-gray-400">Switch shop</p>
                     {shops.map((s) => (
                       <button
@@ -722,7 +740,7 @@ export default function DashboardPage() {
                   )}
                 </button>
                 {notifOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+                  <div className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
                     <p className="border-b border-gray-100 px-4 py-2.5 text-sm font-bold">Notifications · {store.name}</p>
                     {settings.notifications ? (
                       base.notifications.map((n) => (
@@ -1209,6 +1227,17 @@ function OrderDrawer({
   onClose: () => void;
   readOnly: boolean;
 }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
   return (
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/45" onClick={onClose} />
@@ -1552,6 +1581,17 @@ function CustomerDrawer({
   brand: string;
   onClose: () => void;
 }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
   return (
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/45" onClick={onClose} />
@@ -1683,7 +1723,7 @@ function InventorySection({
                         <button
                           disabled={!canAdjust}
                           title={canAdjust ? 'Decrease stock by 1' : 'Requires the Manage inventory permission'}
-                          className="h-8 w-8 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
+                          className="h-10 w-10 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
                           onClick={() => onAdjust(r.product.id, -1)}
                         >
                           −
@@ -1691,7 +1731,7 @@ function InventorySection({
                         <button
                           disabled={!canAdjust}
                           title={canAdjust ? 'Increase stock by 1' : 'Requires the Manage inventory permission'}
-                          className="h-8 w-8 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
+                          className="h-10 w-10 rounded-full border border-gray-200 font-bold disabled:cursor-not-allowed disabled:opacity-40"
                           onClick={() => onAdjust(r.product.id, 1)}
                         >
                           +
@@ -2172,7 +2212,7 @@ function TeamSection({
           </fieldset>
           <fieldset className="mt-5">
             <legend className="text-sm font-medium">Shop scope {roleForm.role.id === 'super_admin' && '(locked: all shops)'}</legend>
-            <div className="mt-2 flex gap-4 text-sm">
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
@@ -2471,7 +2511,7 @@ function SettingsSection({
           </dl>
           <div className="mt-5">
             <p className="text-sm font-medium">Theme preview (this shop&apos;s tokens)</p>
-            <div className="mt-2 flex gap-3">
+            <div className="mt-2 flex flex-wrap gap-3">
               {[
                 ['Brand', store.theme.brand],
                 ['Soft', store.theme.brandSoft],

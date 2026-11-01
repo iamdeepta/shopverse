@@ -28,6 +28,9 @@ body {
   background: var(--surface);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  /* Guardrail: no page-level horizontal scroll on small screens. Inner
+     tables/panels keep their own overflow-x-auto scrolling. */
+  overflow-x: clip;
 }
 
 ::selection {
